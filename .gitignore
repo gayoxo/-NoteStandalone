@@ -1,0 +1,4 @@
+*.class
+
+*.war
+glassfish3/
