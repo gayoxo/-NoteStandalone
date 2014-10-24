@@ -1,4 +1,4 @@
-@note Stand alone
+@note stand alone
 ===============
 
 
