@@ -40,7 +40,6 @@ import com.google.gson.JsonPrimitive;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.awt.Label;
 
 import javax.swing.JScrollPane;
@@ -60,7 +59,7 @@ public class JDialogPrincipal extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -8631059775063764639L;
-	static final String CommanDW="glassfish3/bin/asadmin.bat";
+	static final String CommanDW="glassfish3\\bin\\asadmin.bat";
 	 static final String CommanDU="glassfish3/bin/asadmin";
 	private JTextPane PanelTexto;
 	private StringBuffer SB;
@@ -89,7 +88,10 @@ public class JDialogPrincipal extends JFrame {
 		PanelTexto = new JTextPane();
 		PanelTexto.setEditable(false);
 		SB=new StringBuffer();
-		splitPane.setRightComponent(PanelTexto);
+		
+		JScrollPane scrollPaneTexto = new JScrollPane(); 
+		splitPane.setRightComponent(scrollPaneTexto);
+		scrollPaneTexto.add(PanelTexto);
 		
 		PanelUsuarios = new JPanel();
 		PanelUsuarios.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -259,8 +261,8 @@ public class JDialogPrincipal extends JFrame {
 					CommanD=CommanDW;
 				else
 					CommanD=CommanDU;
-				String [] cmdW = {CommanD,"deploy","GlassAtNote.war","-v"};
-				String [] cmdNW = {CommanD,"undeploy","GlassAtNote.war","-v"};
+				String [] cmdW = {CommanD,"deploy","GlassAtNote.war"};
+				String [] cmdNW = {CommanD,"undeploy","GlassAtNote"};
 				Process process;
 				Process processW;
 				try {	
@@ -278,6 +280,14 @@ public class JDialogPrincipal extends JFrame {
 						PanelTexto.setText(SB.toString());
 						}
 				
+					InputStream inputstreamWEU = process.getErrorStream();
+					BufferedInputStream bufferedinputstreamWEU = new BufferedInputStream(inputstreamWEU);
+					int cWEU;
+					while ((cWEU = bufferedinputstreamWEU.read()) != -1)
+						{
+						System.out.print((char) cWEU);
+						}
+					
 					Iniciado=true;
 
 					System.out.println("@note UnDeployed");
@@ -292,6 +302,15 @@ public class JDialogPrincipal extends JFrame {
 					while ((cW = bufferedinputstreamW.read()) != -1)
 						{
 						System.out.print((char) cW);
+						}
+					
+					
+					InputStream inputstreamWE = processW.getErrorStream();
+					BufferedInputStream bufferedinputstreamWE = new BufferedInputStream(inputstreamWE);
+					int cWE;
+					while ((cWE = bufferedinputstreamWE.read()) != -1)
+						{
+						System.out.print((char) cWE);
 						}
 					
 					System.out.println("@note Deployed");
@@ -309,7 +328,7 @@ public class JDialogPrincipal extends JFrame {
 					    while (ee.hasMoreElements())
 					    {
 					        InetAddress i = (InetAddress) ee.nextElement();
-					        if (!i.getHostAddress().startsWith("127")&&!i.getHostAddress().startsWith("0:")&&(!i.getHostAddress().startsWith("fe80:")))
+					        if (!i.getHostAddress().startsWith("127")&&(!i.getHostAddress().contains(":")))
 					        {
 						        SB.append(" - " + i.getHostAddress()+":8080/GlassAtNote \n");
 								PanelTexto.setText(SB.toString());
@@ -349,8 +368,8 @@ public class JDialogPrincipal extends JFrame {
 					else
 						CommanD=CommanDU;
 					String [] cmd = {CommanD,"start-domain","domain1"};
-					String [] cmdW = {CommanD,"deploy","GlassAtNote.war","-v"};
-					String [] cmdNW = {CommanD,"undeploy","GlassAtNote.war","-v"};
+					String [] cmdW = {CommanD,"deploy","GlassAtNote.war"};
+					String [] cmdNW = {CommanD,"undeploy","GlassAtNote"};
 					Process process;
 					Process processW;
 					try {	
@@ -374,7 +393,23 @@ public class JDialogPrincipal extends JFrame {
 						Iniciado=true;
 						
 						try {
-							Runtime.getRuntime().exec(cmdNW);
+							Process processU = Runtime.getRuntime().exec(cmdNW);
+							
+							InputStream inputstreamU = processU.getInputStream();
+							BufferedInputStream bufferedinputstreamU = new BufferedInputStream(inputstreamU);
+							int cU;
+							while ((cU = bufferedinputstreamU.read()) != -1)
+								{
+								System.out.print((char) cU);
+								}
+							
+							InputStream inputstreamWEU = processU.getErrorStream();
+							BufferedInputStream bufferedinputstreamWEU = new BufferedInputStream(inputstreamWEU);
+							int cWEU;
+							while ((cWEU = bufferedinputstreamWEU.read()) != -1)
+								{
+								System.out.print((char) cWEU);
+								}
 						} catch (Exception e) {
 
 						}
@@ -389,6 +424,14 @@ public class JDialogPrincipal extends JFrame {
 						while ((cW = bufferedinputstreamW.read()) != -1)
 							{
 							System.out.print((char) cW);
+							}
+						
+						InputStream inputstreamWE = processW.getErrorStream();
+						BufferedInputStream bufferedinputstreamWE = new BufferedInputStream(inputstreamWE);
+						int cWE;
+						while ((cWE = bufferedinputstreamWE.read()) != -1)
+							{
+							System.out.print((char) cWE);
 							}
 						
 						System.out.println("@note Deployed");
@@ -454,6 +497,8 @@ public class JDialogPrincipal extends JFrame {
 			
 			dumpJSONElementBase(datos,Lista);
 			
+			PanelUsuariosR.removeAll();
+			
 			if (Lista.size()>1)
 			{
 				PanelUsuariosR.setLayout(new GridLayout(Lista.size(),2));
@@ -479,8 +524,8 @@ public class JDialogPrincipal extends JFrame {
 			PanelTexto.setText(SB.toString());
 			System.out.println("User Loaded");
 		} catch (Exception e) {
-			System.err.println("Error Usuarios, please Redeply @note");
-			SB.append("Error Usuarios, please Redeply @note \n");
+			System.err.println("Error Usuarios, please Redeploy @note");
+			SB.append("Error Usuarios, please Redeploy @note \n");
 			PanelTexto.setText(SB.toString());
 			e.printStackTrace();
 		}
@@ -560,12 +605,28 @@ public class JDialogPrincipal extends JFrame {
 				SB.append("Stop System... \n");
 				PanelTexto.setText(SB.toString());
 				String [] cmd = {CommanD,"stop-domain","domain1"};
-				String [] cmdNW = {CommanD,"undeploy","GlassAtNote.war","-v"};
+				String [] cmdNW = {CommanD,"undeploy","GlassAtNote"};
 				Process process;
 				try {
 					
 					try {
-						Runtime.getRuntime().exec(cmdNW);
+						Process processU = Runtime.getRuntime().exec(cmdNW);
+						
+						InputStream inputstreamU = processU.getInputStream();
+						BufferedInputStream bufferedinputstreamU = new BufferedInputStream(inputstreamU);
+						int cU;
+						while ((cU = bufferedinputstreamU.read()) != -1)
+							{
+							System.out.print((char) cU);
+							}
+						
+						InputStream inputstreamWEU = processU.getErrorStream();
+						BufferedInputStream bufferedinputstreamWEU = new BufferedInputStream(inputstreamWEU);
+						int cWEU;
+						while ((cWEU = bufferedinputstreamWEU.read()) != -1)
+							{
+							System.out.print((char) cWEU);
+							}
 					} catch (Exception e) {
 
 					}
@@ -599,6 +660,7 @@ public class JDialogPrincipal extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		try {
 			JFrame Principal=new JDialogPrincipal();
 			Principal.setVisible(true);
