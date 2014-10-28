@@ -91,7 +91,7 @@ public class JDialogPrincipal extends JFrame {
 		
 		JScrollPane scrollPaneTexto = new JScrollPane(); 
 		splitPane.setRightComponent(scrollPaneTexto);
-		scrollPaneTexto.add(PanelTexto);
+		scrollPaneTexto.setViewportView(PanelTexto);
 		
 		PanelUsuarios = new JPanel();
 		PanelUsuarios.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -222,6 +222,7 @@ public class JDialogPrincipal extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
+				setVisible(false);
 				if (Iniciado)
 				{
 				Thread TW=StopC();
