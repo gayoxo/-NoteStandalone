@@ -3,10 +3,13 @@
  */
 package anote;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 
 import java.awt.Desktop;
+import java.awt.Image;
 
 import javax.swing.JTextPane;
 
@@ -38,6 +41,14 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.awt.Label;
+
+import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
+
+import java.awt.Color;
+import java.awt.FlowLayout;
+
 /**
  * @author Joaquin Gayoso-Cabada
  *
@@ -55,6 +66,17 @@ public class JDialogPrincipal extends JFrame {
 	private StringBuffer SB;
 	private boolean Iniciado;
 	private JButton BotonReDeply;
+	private JPanel panelIcon;
+	private JPanel PanelUsuarios;
+	private JPanel panel;
+	private Label label;
+	private Label label_1;
+	private JScrollPane scrollPane;
+	private JPanel panel_1;
+	private JPanel PanelUsuariosR;
+	private JPanel panel_2;
+	private JPanel panel_3;
+	private JPanel panel_4;
 	
 	public JDialogPrincipal() {
 		super();
@@ -69,9 +91,44 @@ public class JDialogPrincipal extends JFrame {
 		SB=new StringBuffer();
 		splitPane.setRightComponent(PanelTexto);
 		
-		JPanel PanelUsuarios = new JPanel();
+		PanelUsuarios = new JPanel();
+		PanelUsuarios.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane.setLeftComponent(PanelUsuarios);
-		PanelUsuarios.setLayout(new GridLayout(1, 0, 0, 0));
+		PanelUsuarios.setLayout(new BorderLayout(0, 0));
+		
+		panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		PanelUsuarios.add(panel, BorderLayout.NORTH);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		panel_2 = new JPanel();
+		panel.add(panel_2);
+		panel_2.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_2.add(panel_3);
+		
+		label = new Label("User");
+		panel_3.add(label);
+		
+		panel_4 = new JPanel();
+		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_2.add(panel_4);
+		
+		label_1 = new Label("Password");
+		panel_4.add(label_1);
+		
+		scrollPane = new JScrollPane();
+		PanelUsuarios.add(scrollPane);
+		
+		panel_1 = new JPanel();
+		scrollPane.setViewportView(panel_1);
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		PanelUsuariosR = new JPanel();
+		panel_1.add(PanelUsuariosR);
+		PanelUsuariosR.setLayout(new GridLayout(1, 2, 0, 0));
 		
 		BotonReDeply = new JButton("Re-Deploy");
 		BotonReDeply.addMouseListener(new MouseAdapter() {
@@ -82,6 +139,23 @@ public class JDialogPrincipal extends JFrame {
 			}
 		});
 		getContentPane().add(BotonReDeply, BorderLayout.SOUTH);
+		
+		
+		ImageIcon imagenFondo=new ImageIcon();
+		try {
+//			BufferedImage myPicture = ImageIO.read(new File("Logo.jpg"));
+//			imagenFondo = new ImageIcon(myPicture);
+			imagenFondo = new ImageIcon(JDialogPrincipal.class.getResource("/anote/Logo.jpg"));
+		} catch (Exception e) {
+			
+		}
+		
+		Image Image = imagenFondo.getImage().getScaledInstance(140, 70,  java.awt.Image.SCALE_SMOOTH);  
+		JLabel picLabel = new JLabel( new ImageIcon(Image));
+		panelIcon = new JPanel();
+		getContentPane().add(panelIcon, BorderLayout.NORTH);	
+		panelIcon.add(picLabel);
+		
 		Iniciado=false;
 		
 		addWindowListener(new WindowListener() {
@@ -128,19 +202,19 @@ public class JDialogPrincipal extends JFrame {
 
 			@Override
 			public void windowIconified(WindowEvent e) {
-				// TODO Auto-generated method stub
+			
 				
 			}
 			
 			@Override
 			public void windowDeiconified(WindowEvent e) {
-				// TODO Auto-generated method stub
+			
 				
 			}
 			
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 			
@@ -168,7 +242,7 @@ public class JDialogPrincipal extends JFrame {
 			
 			@Override
 			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 		});
@@ -380,9 +454,34 @@ public class JDialogPrincipal extends JFrame {
 			
 			dumpJSONElementBase(datos,Lista);
 			
-			System.out.println(Lista.size()+"");
+			if (Lista.size()>1)
+			{
+				PanelUsuariosR.setLayout(new GridLayout(Lista.size(),2));
+			for (int i = 0; i < Lista.size(); i++) {
+				UserJSon UJ=Lista.get(i);
+				JPanel panel_U = new JPanel();
+				panel_U.setBorder(new LineBorder(new Color(0, 0, 0)));
+				panel_U.add(new JLabel(UJ.getUser()+"  "));
+				PanelUsuariosR.add(panel_U);
+				
+				JLabel Pass=new JLabelP(UJ.getPassword());
+				
+				JPanel panel_P = new JPanel();
+				panel_P.setBorder(new LineBorder(new Color(0, 0, 0)));
+				panel_P.add(Pass);
+				PanelUsuariosR.add(panel_P);
+			}
+			}
+			PanelUsuariosR.repaint();
+			this.repaint();
+			PanelUsuarios.repaint();
+			SB.append("User Loaded \n");
+			PanelTexto.setText(SB.toString());
+			System.out.println("User Loaded");
 		} catch (Exception e) {
-			System.err.println("Error Usuarios");
+			System.err.println("Error Usuarios, please Redeply @note");
+			SB.append("Error Usuarios, please Redeply @note \n");
+			PanelTexto.setText(SB.toString());
 			e.printStackTrace();
 		}
 		
@@ -393,7 +492,7 @@ public class JDialogPrincipal extends JFrame {
 	private void dumpJSONElementBase(JsonElement elemento, ArrayList<UserJSon> lista) {
 		if (elemento.isJsonArray()) {
 	        JsonArray array = elemento.getAsJsonArray();
-	        System.out.println("Es array. Numero de elementos: " + array.size());
+	       // System.out.println("Es array. Numero de elementos: " + array.size());
 	        java.util.Iterator<JsonElement> iter = array.iterator();
 	        while (iter.hasNext()) {
 	            JsonElement entrada = iter.next();
@@ -405,15 +504,15 @@ public class JDialogPrincipal extends JFrame {
 
 	private void dumpJSONElementUser(JsonElement elemento, ArrayList<UserJSon> lista) {
 		if (elemento.isJsonObject()) {
-	        System.out.println("Es objeto");
+	       // System.out.println("Es objeto");
 	        JsonObject obj = elemento.getAsJsonObject();
 	        java.util.Set<java.util.Map.Entry<String,JsonElement>> entradas = obj.entrySet();
 	        java.util.Iterator<java.util.Map.Entry<String,JsonElement>> iter = entradas.iterator();
 	        UserJSon nuevo=new UserJSon("", "");
 	        while (iter.hasNext()) {
 	            java.util.Map.Entry<String,JsonElement> entrada = iter.next();
-	            System.out.println("Clave: " + entrada.getKey());
-	            System.out.println("Valor:");
+	         //   System.out.println("Clave: " + entrada.getKey());
+	         //   System.out.println("Valor:");
 	            String valor =dumpJSONElementValue(entrada.getValue());
 	            if (entrada.getKey().equals("User"))
 	            	nuevo.setUser(valor);
@@ -428,16 +527,16 @@ public class JDialogPrincipal extends JFrame {
 	
 	private String dumpJSONElementValue(JsonElement elemento) {
 		if (elemento.isJsonPrimitive()) {
-	        System.out.println("Es primitiva");
+	       // System.out.println("Es primitiva");
 	        JsonPrimitive valor = elemento.getAsJsonPrimitive();
 	        if (valor.isBoolean()) {
-	            System.out.println("Es booleano: " + valor.getAsBoolean());
+	       //     System.out.println("Es booleano: " + valor.getAsBoolean());
 	            return valor.getAsBoolean()+"";
 	        } else if (valor.isNumber()) {
-	            System.out.println("Es numero: " + valor.getAsNumber());
+	       //     System.out.println("Es numero: " + valor.getAsNumber());
 	            return valor.getAsNumber()+"";
 	        } else if (valor.isString()) {
-	            System.out.println("Es texto: " + valor.getAsString());
+	        //    System.out.println("Es texto: " + valor.getAsString());
 	            return valor.getAsString();
 	        }
 		}
