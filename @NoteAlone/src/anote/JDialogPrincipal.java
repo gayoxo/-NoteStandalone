@@ -76,6 +76,7 @@ public class JDialogPrincipal extends JFrame {
 	private JPanel panel_2;
 	private JPanel panel_3;
 	private JPanel panel_4;
+	private JButton BotonRefresUsers;
 	
 	public JDialogPrincipal() {
 		super();
@@ -143,6 +144,7 @@ public class JDialogPrincipal extends JFrame {
 		getContentPane().add(BotonReDeply, BorderLayout.SOUTH);
 		
 		
+		
 		ImageIcon imagenFondo=new ImageIcon();
 		try {
 //			BufferedImage myPicture = ImageIO.read(new File("Logo.jpg"));
@@ -157,6 +159,18 @@ public class JDialogPrincipal extends JFrame {
 		panelIcon = new JPanel();
 		getContentPane().add(panelIcon, BorderLayout.NORTH);	
 		panelIcon.add(picLabel);
+		
+		
+		BotonRefresUsers = new JButton("Refresh Users");
+		BotonRefresUsers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				BotonRefresUsers.setEnabled(false);
+				ProcessUsers();
+			}
+		});
+		PanelUsuarios.add(BotonRefresUsers, BorderLayout.SOUTH);
+		BotonRefresUsers.setEnabled(false);
 		
 		Iniciado=false;
 		
@@ -222,19 +236,24 @@ public class JDialogPrincipal extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				setVisible(false);
-				if (Iniciado)
-				{
-				Thread TW=StopC();
-				while (TW.isAlive())
+				try {
+					setVisible(false);
+					if (Iniciado)
 					{
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-					}
+					Thread TW=StopC();
+					while (TW.isAlive())
+						{
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+						}
+					}	
+				} catch (Exception e2) {
+			
 				}
+				
 				System.exit(0);
 			}
 			
@@ -518,17 +537,19 @@ public class JDialogPrincipal extends JFrame {
 				PanelUsuariosR.add(panel_P);
 			}
 			}
-			PanelUsuariosR.repaint();
-			this.repaint();
-			PanelUsuarios.repaint();
+			PanelUsuariosR.revalidate();
+			this.revalidate();
+			PanelUsuarios.revalidate();
 			SB.append("User Loaded \n");
 			PanelTexto.setText(SB.toString());
 			System.out.println("User Loaded");
+			BotonRefresUsers.setEnabled(true);
 		} catch (Exception e) {
 			System.err.println("Error Usuarios, please Redeploy @note");
 			SB.append("Error Usuarios, please Redeploy @note \n");
 			PanelTexto.setText(SB.toString());
 			e.printStackTrace();
+			BotonRefresUsers.setEnabled(true);
 		}
 		
 				
