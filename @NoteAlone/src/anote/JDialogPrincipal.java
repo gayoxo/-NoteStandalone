@@ -80,6 +80,22 @@ public class JDialogPrincipal extends JFrame {
 	
 	public JDialogPrincipal() {
 		super();
+		
+		ImageIcon imagenFondo2=new ImageIcon();
+		try {
+//			BufferedImage myPicture = ImageIO.read(new File("Logo.jpg"));
+//			imagenFondo = new ImageIcon(myPicture);
+			imagenFondo2 = new ImageIcon(JDialogPrincipal.class.getResource("/anote/IconoLogo.jpg"));
+			Image Image2 = imagenFondo2.getImage().getScaledInstance(70, 70,  java.awt.Image.SCALE_SMOOTH);  
+			
+			setIconImage(Image2);
+		} catch (Exception e) {
+			
+		}
+		
+		
+		
+		
 		setSize(800, 600);
 		setTitle("@note Alone Control Panel");
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -143,19 +159,22 @@ public class JDialogPrincipal extends JFrame {
 		});
 		getContentPane().add(BotonReDeply, BorderLayout.SOUTH);
 		
+		BotonReDeply.setEnabled(false);
 		
 		
 		ImageIcon imagenFondo=new ImageIcon();
+		JLabel picLabel=new JLabel("@note");
 		try {
 //			BufferedImage myPicture = ImageIO.read(new File("Logo.jpg"));
 //			imagenFondo = new ImageIcon(myPicture);
 			imagenFondo = new ImageIcon(JDialogPrincipal.class.getResource("/anote/Logo.jpg"));
+			Image Image = imagenFondo.getImage().getScaledInstance(140, 70,  java.awt.Image.SCALE_SMOOTH);  
+			picLabel = new JLabel( new ImageIcon(Image));
 		} catch (Exception e) {
 			
 		}
 		
-		Image Image = imagenFondo.getImage().getScaledInstance(140, 70,  java.awt.Image.SCALE_SMOOTH);  
-		JLabel picLabel = new JLabel( new ImageIcon(Image));
+		
 		panelIcon = new JPanel();
 		getContentPane().add(panelIcon, BorderLayout.NORTH);	
 		panelIcon.add(picLabel);
@@ -480,6 +499,7 @@ public class JDialogPrincipal extends JFrame {
 						
 						ProcessUsers();
 						Desktop.getDesktop().browse(new URI("http://localhost:8080/GlassAtNote"));
+						BotonReDeply.setEnabled(true);
 						
 					} catch (IOException | URISyntaxException e) {
 						System.out.println("Start Error");
@@ -519,7 +539,7 @@ public class JDialogPrincipal extends JFrame {
 			
 			PanelUsuariosR.removeAll();
 			
-			if (Lista.size()>1)
+			if (Lista.size()>0)
 			{
 				PanelUsuariosR.setLayout(new GridLayout(Lista.size(),2));
 			for (int i = 0; i < Lista.size(); i++) {
